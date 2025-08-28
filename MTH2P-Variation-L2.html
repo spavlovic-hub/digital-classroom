@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTH2P - Direct and Partial Variation</title>
+    
+    <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=ae842b9e6d484c2aa4415b355e3ea792"></script>
+    
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #005A9C;
+            --secondary-color: #E6F0F6;
+            --text-color: #333;
+            --header-font: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            --body-font: 'Georgia', serif;
+        }
+        .is-hidden { visibility: hidden; opacity: 0; }
+        body { font-family: var(--body-font); color: var(--text-color); line-height: 1.8; margin: 0; padding-top: 60px; background-color: #fdfdfd; transition: opacity 0.3s ease-in-out; }
+        h1, h2, h3 { font-family: var(--header-font); font-weight: 700; color: var(--primary-color); }
+        h1 { font-size: 2.8em; margin-bottom: 0; }
+        h2 { font-size: 2.2em; border-bottom: 3px solid var(--secondary-color); padding-bottom: 10px; }
+        h3 { font-size: 1.6em; }
+        .subtitle { font-family: var(--header-font); font-size: 1.5em; font-weight: 300; color: #666; margin-top: 5px; }
+        section { min-height: 90vh; padding: 40px 8%; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #ddd; }
+        .centered { text-align: center; }
+        .desmos-container { max-width: 600px; width: 100%; height: 400px; margin: 20px auto; border: 1px solid #ccc; }
+        .big-question h2 { font-size: 3em; font-weight: 300; border: none; color: #555; max-width: 800px; margin: 0 auto; }
+        .button { display: inline-block; padding: 12px 25px; font-family: var(--header-font); font-size: 1em; font-weight: bold; color: #fff; background-color: var(--primary-color); border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-top: 15px; }
+        .button:hover { background-color: #004170; }
+        .solution-box { display: none; margin-top: 20px; padding: 20px; background-color: var(--secondary-color); border-left: 5px solid var(--primary-color); border-radius: 5px; }
+        .step-by-step { font-size: 1.2em; line-height: 2.5; }
+        .canvas-container { margin: 20px 0; }
+        .stylus-zone { border: 2px dashed #ccc; border-radius: 5px; }
+        .clear-button { font-size: 0.8em; padding: 5px 10px; background-color: #6c757d; }
+        nav { position: fixed; top: 0; width: 100%; background-color: rgba(255, 255, 255, 0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px 2%; z-index: 1000; display: flex; justify-content: center; align-items: center; }
+        nav a { font-family: var(--header-font); color: var(--primary-color); text-decoration: none; padding: 10px 20px; font-weight: 600; transition: color 0.3s, background-color 0.3s; }
+        nav a:hover { background-color: var(--secondary-color); border-radius: 5px; }
+        hr.divider { border: 0; height: 2px; background: linear-gradient(to right, rgba(0,90,156,0), rgba(0,90,156,0.75), rgba(0,90,156,0)); margin: 40px 0; }
+        .quiz-form-container { max-width: 800px; margin: 20px auto; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; }
+        .quiz-question { margin-bottom: 20px; }
+        .quiz-question label { display: block; margin-bottom: 8px; font-weight: bold; font-family: var(--header-font); }
+        .quiz-question input[type="text"], .quiz-question select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    
+    <div id="lesson-content">
+        <nav>
+            <a href="#title">Title</a><a href="#big-question">Big Question</a><a href="#core-concepts">Core Concepts</a><a href="#guided-practice">Guided Practice</a><a href="#independent-tasks">Tasks</a><a href="#recap-quiz">Recap</a>
+        </nav>
+
+        <section id="title" class="centered">
+            <h1>MTH2P — Modelling Linear Relations</h1>
+            <p class="subtitle">Lesson 2: <strong>Direct and Partial Variation</strong></p>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="big-question" class="big-question centered">
+            <h2>If you get paid by the hour, does your pay start at zero? What if you're a plumber who charges a service fee just to show up?</h2>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="core-concepts">
+            <h2>Core Concepts: Does it Start at Zero?</h2>
+            <p>Today we're looking at two types of linear relations. They both create straight lines, but they start at different places.</p>
+            
+            <h3>1. Direct Variation</h3>
+            <p>In **direct variation**, the relationship starts at the origin (0, 0). If you do zero work, you get zero pay. If you drive zero kilometres, you use zero gas. The initial value is always zero.</p>
+            <ul>
+                <li>The y-intercept ($b$) is always <strong>0</strong>.</li>
+                <li>The equation is simpler: $y = mx$.</li>
+                <li>The graph is a straight line that passes **directly through the origin**.</li>
+            </ul>
+            <div class="centered">
+                <div id="desmos-graph-1" class="desmos-container"></div>
+                <p><em>Example: Earning $20 per hour. The graph starts at (0, 0).</em></p>
+            </div>
+
+            <h3>2. Partial Variation</h3>
+            <p>In **partial variation**, the relationship starts with an initial value that is **not** zero. There is a fixed, flat fee or a starting amount before the rate of change begins.</p>
+            <ul>
+                <li>The y-intercept ($b$) is **not** 0.</li>
+                <li>The equation is $y = mx + b$.</li>
+                <li>The graph is a straight line that **does not** pass through the origin.</li>
+            </ul>
+            <div class="centered">
+                <div id="desmos-graph-2" class="desmos-container"></div>
+                 <p><em>Example: A $50 flat fee, plus $20 per hour. The graph starts at (0, 50).</em></p>
+            </div>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="guided-practice">
+            <h2>Guided Practice: Banquet Hall Rental</h2>
+            <p>A banquet hall charges a $200 rental fee, plus $30 per guest for food. Let's analyze this relationship.</p>
+            
+            <h3>1. Does this situation represent direct or partial variation? How do you know?</h3>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_gp1" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_gp1">Clear</button></div>
+            
+            <h3>2. What is the initial value (the flat fee)?</h3>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_gp2" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_gp2">Clear</button></div>
+
+            <h3>3. What is the rate of change (cost per guest)?</h3>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_gp3" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_gp3">Clear</button></div>
+
+            <h3>4. Write the equation to model the total cost.</h3>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_gp4" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_gp4">Clear</button></div>
+            
+            <button class="button" onclick="toggleSolution('gp_solution')">Show Solution</button>
+            <div id="gp_solution" class="solution-box">
+                <h4>Solution Walkthrough</h4>
+                <p>1. This is **partial variation** because there is an initial rental fee of $200, even for zero guests. The graph does not start at (0, 0).</p>
+                <p>2. The initial value is the rental fee: **$b = 200**.</p>
+                <p>3. The rate of change is the cost per guest: **$m = 30**.</p>
+                <p>4. The equation is **$C = 30g + 200$**, where $C$ is the cost and $g$ is the number of guests.</p>
+            </div>
+        </section>
+        
+        <hr class="divider">
+
+        <section id="independent-tasks">
+             <h2>Independent Tasks</h2>
+             <p>For each scenario, identify if it is direct or partial variation, and write the equation.</p>
+        </section>
+
+        <section class="task">
+            <h3>Task 1: The Fundraiser</h3>
+            <p>A school is holding a car wash to raise money. They charge $12 per car.</p>
+            <p><strong>Your Workspace:</strong></p>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it1" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it1">Clear</button></div>
+            <button class="button" onclick="toggleSolution('it1_solution')">Show Solution</button>
+            <div id="it1_solution" class="solution-box">
+                <p><strong>Direct Variation.</strong> There is no initial fee. The graph starts at (0, 0).<br>
+                <strong>Equation:</strong> $P = 12c$, where $P$ is profit and $c$ is the number of cars.</p>
+            </div>
+        </section>
+
+        <section class="task">
+            <h3>Task 2: The Savings Account</h3>
+            <p>You start with $50 in a savings account and then deposit $15 each week.</p>
+            <p><strong>Your Workspace:</strong></p>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it2" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it2">Clear</button></div>
+            <button class="button" onclick="toggleSolution('it2_solution')">Show Solution</button>
+            <div id="it2_solution" class="solution-box">
+                <p><strong>Partial Variation.</strong> There is an initial amount of $50.<br>
+                <strong>Equation:</strong> $S = 15w + 50$, where $S$ is savings and $w$ is the number of weeks.</p>
+            </div>
+        </section>
+
+        <section class="task">
+            <h3>Task 3: The Recipe</h3>
+            <p>A recipe for cookies requires 2 cups of flour per batch.</p>
+            <p><strong>Your Workspace:</strong></p>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it3" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it3">Clear</button></div>
+            <button class="button" onclick="toggleSolution('it3_solution')">Show Solution</button>
+            <div id="it3_solution" class="solution-box">
+                <p><strong>Direct Variation.</strong> For zero batches, you need zero flour.<br>
+                <strong>Equation:</strong> $F = 2b$, where $F$ is flour and $b$ is the number of batches.</p>
+            </div>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="recap-quiz">
+            <h2>Recap</h2>
+            <ul>
+                <li><strong>Direct Variation</strong> starts at (0, 0). Its equation is $y = mx$.</li>
+                <li><strong>Partial Variation</strong> starts at an initial value, $b$. Its equation is $y = mx + b$.</li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+    (function() {
+        const password = "variation"; // This must be updated
+        let input = prompt("Please enter the password for today's lesson:", "");
+        const content = document.getElementById('lesson-content');
+        if (input.toLowerCase() === password) {
+            content.style.display = 'block';
+        } else {
+            alert("Incorrect password. Access denied.");
+            document.body.innerHTML = '<h1 style="text-align:center; padding-top: 50px;">Access Denied</h1>';
+        }
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        window.toggleSolution = function(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'none' || el.style.display === '') {
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
+            }
+        };
+
+        const canvases = {};
+        const canvasElements = document.querySelectorAll('.stylus-zone');
+        canvasElements.forEach(canvasEl => {
+            const canvasId = canvasEl.id;
+            const canvas = new fabric.Canvas(canvasId, { isDrawingMode: true });
+            canvas.freeDrawingBrush.width = 3; canvas.freeDrawingBrush.color = '#333';
+            canvases[canvasId] = canvas;
+            const container = canvasEl.closest('.canvas-container');
+            if (container) {
+                 const setCanvasSize = () => { canvas.setWidth(container.offsetWidth); canvas.renderAll(); };
+                setCanvasSize();
+                window.addEventListener('resize', setCanvasSize);
+            }
+        });
+        
+        const clearButtons = document.querySelectorAll('.clear-button');
+        clearButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const canvasId = this.getAttribute('data-canvas');
+                if (canvases[canvasId]) { canvases[canvasId].clear(); }
+            });
+        });
+
+        // --- Desmos Graph Initialization ---
+        var graph1El = document.getElementById('desmos-graph-1');
+        var calculator1 = Desmos.GraphingCalculator(graph1El, { xAxisLabel: 'Hours Worked', yAxisLabel: 'Pay ($)' });
+        calculator1.setExpression({ id: 'g1_line', latex: 'y=20x' });
+        calculator1.setMathBounds({ left: -1, right: 10, bottom: -10, top: 210 });
+
+        var graph2El = document.getElementById('desmos-graph-2');
+        var calculator2 = Desmos.GraphingCalculator(graph2El, { xAxisLabel: 'Hours Worked', yAxisLabel: 'Pay ($)' });
+        calculator2.setExpression({ id: 'g2_line', latex: 'y=20x+50' });
+        calculator2.setMathBounds({ left: -1, right: 10, bottom: -10, top: 260 });
+    });
+    </script>
+</body>
+</html>
