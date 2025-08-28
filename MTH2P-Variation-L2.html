@@ -6,7 +6,6 @@
     <title>MTH2P - Direct and Partial Variation</title>
     
     <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=ae842b9e6d484c2aa4415b355e3ea792"></script>
-    
     <script>
     MathJax = {
       tex: {
@@ -21,7 +20,6 @@
     <script type="text/javascript" id="MathJax-script" async
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
     </script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 
     <style>
@@ -29,7 +27,6 @@
             --primary-color: #005A9C;
             --secondary-color: #E6F0F6;
             --text-color: #333;
-            /* CORRECTED: Using a standard, reliable system font stack */
             --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
         body { 
@@ -38,7 +35,11 @@
             line-height: 1.8; 
             margin: 0; 
             padding-top: 60px; 
-            background-color: #fdfdfd; 
+            background-color: #fdfdfd;
+            /* FIX: Forcing normal font style and spacing to prevent "bunching" */
+            font-style: normal;
+            letter-spacing: normal;
+            word-spacing: normal;
         }
         h1, h2, h3 { 
             font-family: var(--font-stack); 
