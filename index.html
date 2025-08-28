@@ -89,4 +89,326 @@
             display: inline-block;
             padding: 12px 25px;
             font-family: var(--header-font);
-            font-size: 1em
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+        
+        .button:hover { background-color: #004170; }
+
+        .solution-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 5px;
+        }
+
+        .step-by-step {
+            font-size: 1.2em;
+            line-height: 2.5;
+        }
+
+        .canvas-container { margin: 20px 0; }
+        .stylus-zone { border: 2px dashed #ccc; border-radius: 5px; }
+        
+        .clear-button {
+            font-size: 0.8em;
+            padding: 5px 10px;
+            background-color: #6c757d;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px 2%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        nav a {
+            font-family: var(--header-font);
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: color 0.3s, background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        hr.divider {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, rgba(0,90,156,0), rgba(0,90,156,0.75), rgba(0,90,156,0));
+            margin: 40px 0;
+        }
+        
+        .quiz-form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .quiz-question { margin-bottom: 20px; }
+        .quiz-question label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-family: var(--header-font);
+        }
+        .quiz-question input[type="text"],
+        .quiz-question select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="lesson-content" class="is-hidden">
+        <nav>
+            <a href="#title">Title</a>
+            <a href="#big-question">Big Question</a>
+            <a href="#core-concepts">Core Concepts</a>
+            <a href="#guided-practice">Guided Practice</a>
+            <a href="#independent-tasks">Independent Tasks</a>
+            <a href="#recap-quiz">Recap & Quiz</a>
+        </nav>
+
+        <section id="title" class="centered">
+            <h1>MTH2P — Modelling Linear Relations</h1>
+            <p class="subtitle">Lesson for September 8, 2025: <strong>Slope and Y-Intercept</strong></p>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="big-question" class="big-question centered">
+            <h2>How can a simple straight line describe everything from your cell phone bill to the distance a car travels?</h2>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="core-concepts">
+            <h2>Core Concepts: The Anatomy of a Line</h2>
+            <p>Every straight line can be described by a simple equation. This equation has two critical parts that tell us the line's story: its steepness and its starting point.</p>
+            
+            <h3>1. The Slope ($m$)</h3>
+            <p>The <strong>slope</strong> tells us how steep a line is. It's the "rate of change." Think of it as instructions for moving from one point on the line to another.</p>
+            <p>We calculate it as the <strong>"rise"</strong> (vertical change) divided by the <strong>"run"</strong> (horizontal change).</p>
+            $$m = \frac{\text{rise}}{\text{run}} = \frac{\Delta y}{\Delta x}$$
+            <ul>
+                <li>A <strong>positive slope</strong> means the line goes up from left to right.</li>
+                <li>A <strong>negative slope</strong> means the line goes down from left to right.</li>
+            </ul>
+
+            <h3>2. The Y-Intercept ($b$)</h3>
+            <p>The <strong>y-intercept</strong> is the point where the line crosses the vertical y-axis. It's the "starting value" or "initial amount" when $x=0$.</p>
+
+            <h3>The Magic Formula: $y = mx + b$</h3>
+            <p>This is the <strong>slope-intercept form</strong> of a linear equation. If you know the slope ($m$) and the y-intercept ($b$), you know everything about the line.</p>
+            
+            <div class="centered">
+                <iframe src="https://www.desmos.com/calculator/jytayl3vsa?embed" width="600" height="400" style="border:1px solid #ccc; margin:20px 0;" title="Desmos Graph of a Line"></iframe>
+                <p><em>Explore the graph. The blue line represents the equation. The red point marks the y-intercept.</em></p>
+            </div>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="guided-practice">
+            <h2>Guided Practice: A Real-World Scenario</h2>
+            <h3>Scenario: Mobile Phone Plan</h3>
+            <p>A phone company offers a plan that costs a <strong>$20 flat fee</strong> each month, plus <strong>$10 for every gigabyte (GB)</strong> of data used. Let's model this relationship.</p>
+
+            <h4>Step 1: Identify the "Starting Value" (Y-Intercept, $b$)</h4>
+            <div class="canvas-container">
+                <canvas class="stylus-zone" id="canvas_gp1" width="900" height="150"></canvas>
+                <button class="button clear-button" data-canvas="canvas_gp1">Clear</button>
+            </div>
+            
+            <h4>Step 2: Identify the "Rate of Change" (Slope, $m$)</h4>
+            <div class="canvas-container">
+                <canvas class="stylus-zone" id="canvas_gp2" width="900" height="150"></canvas>
+                <button class="button clear-button" data-canvas="canvas_gp2">Clear</button>
+            </div>
+            
+            <h4>Step 3: Write the Equation in $y = mx + b$ form</h4>
+            <div class="canvas-container">
+                <canvas class="stylus-zone" id="canvas_gp3" width="900" height="200"></canvas>
+                <button class="button clear-button" data-canvas="canvas_gp3">Clear</button>
+            </div>
+            
+            <button class="button" onclick="toggleSolution('gp_solution')">Show Solution</button>
+            <div id="gp_solution" class="solution-box">
+                <h4>Solution Walkthrough</h4>
+                <div class="step-by-step">
+                    $\text{Starting Value (flat fee)} \implies b = 20$ <br>
+                    $\text{Rate of Change (cost per GB)} \implies m = 10$ <br>
+                    $\text{Equation is } C = 10d + 20$
+                </div>
+                <div class="centered">
+                    <iframe src="https://www.desmos.com/calculator/2z9g7m8xrq?embed" width="600" height="400" style="border:1px solid #ccc; margin:20px 0;" title="Desmos Graph of Phone Plan"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+        
+        <section id="independent-tasks">
+            <h2>Independent Tasks</h2>
+            <p>Apply your knowledge to the following scenarios. Use the stylus zones to show your work.</p>
+        </section>
+        
+        <section class="task">
+            <h3>Task 1: The Coffee Shop</h3>
+            <p>The graph below shows the cost of buying coffee at a local shop, which includes a one-time fee for a reusable mug.</p>
+            <div class="centered">
+                <iframe src="https://www.desmos.com/calculator/l0aok0i0gq?embed" width="600" height="400" style="border:1px solid #ccc; margin:20px 0;" title="Desmos Graph of Coffee Cost"></iframe>
+            </div>
+            <p><strong>Your Workspace:</strong></p>
+            <div class="canvas-container">
+                <canvas class="stylus-zone" id="canvas_it1" width="900" height="200"></canvas>
+                <button class="button clear-button" data-canvas="canvas_it1">Clear</button>
+            </div>
+            <button class="button" onclick="toggleSolution('it1_solution')">Show Solution</button>
+            <div id="it1_solution" class="solution-box">
+                <p><strong>Y-intercept ($b$):</strong> The line starts at $y=5$. So, the mug costs \$5. <br>
+                <strong>Slope ($m$):</strong> From (0, 5), the line goes to (2, 10). Rise = $10-5=5$. Run = $2-0=2$. Slope $m = 5/2 = 2.5$. Each coffee costs \$2.50. <br>
+                <strong>Equation:</strong> $C = 2.50n + 5$, where $C$ is cost and $n$ is the number of coffees.</p>
+            </div>
+        </section>
+
+        <section class="task">
+            <h3>Task 2: The Taxi Fare</h3>
+            <p>A taxi service charges a \$3.00 pickup fee, plus \$1.50 for every kilometre driven.</p>
+            <p><strong>Your Workspace:</strong></p>
+            <div class="canvas-container">
+                <canvas class="stylus-zone" id="canvas_it2" width="900" height="200"></canvas>
+                <button class="button clear-button" data-canvas="canvas_it2">Clear</button>
+            </div>
+            <button class="button" onclick="toggleSolution('it2_solution')">Show Solution</button>
+            <div id="it2_solution" class="solution-box">
+                <p><strong>Y-intercept ($b$):</strong> The pickup fee is the starting cost, so $b = 3.00$. <br>
+                <strong>Slope ($m$):</strong> The rate per kilometre is the slope, so $m = 1.50$. <br>
+                <strong>Equation:</strong> $F = 1.50k + 3.00$</p>
+            </div>
+        </section>
+        
+        <hr class="divider">
+        
+        <section id="recap-quiz">
+            <h2>Recap &amp; Exit Card Quiz</h2>
+            <h3>Key Takeaways:</h3>
+            <ul>
+                <li>The equation of a line can be written as <strong>$y = mx + b$</strong>.</li>
+                <li><strong>$m$ is the slope</strong>: It measures the steepness or the rate of change.</li>
+                <li><strong>$b$ is the y-intercept</strong>: It is the starting value.</li>
+            </ul>
+            
+            <div class="quiz-form-container">
+                <h3>Exit Card</h3>
+                <div id="google-form-placeholder">
+                    <p style="text-align:center; font-weight:bold; color:red;">[Teacher: Paste your Google Form embed code here]</p>
+                    <form onsubmit="event.preventDefault(); alert('Submission received!');">
+                        <div class="quiz-question">
+                          <label for="q1">A gym membership costs \$50 to sign up and \$5 per visit. What is the slope ($m$)?</label>
+                          <input type="text" id="q1" name="q1">
+                        </div>
+                        <div class="quiz-question">
+                          <label for="q2">For the equation $y = -3x + 8$, what is the y-intercept ($b$)?</label>
+                          <input type="text" id="q2" name="q2">
+                        </div>
+                        <div class="quiz-question">
+                            <label for="q3">A line goes through (0, 4) and (2, 10). What is its equation?</label>
+                            <input type="text" id="q3" name="q3" placeholder="y = mx + b">
+                        </div>
+                        <button type="submit" class="button">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+    // This script runs after the whole page is loaded, then reveals the content.
+    (function() {
+        const password = "linear";
+        let input = prompt("Please enter the password for today's lesson:", "");
+        const content = document.getElementById('lesson-content');
+
+        if (input === password) {
+            content.classList.remove('is-hidden');
+        } else {
+            alert("Incorrect password. Access denied.");
+            // Hide the content permanently if password is wrong
+            content.innerHTML = '<h1 style="text-align:center; padding-top: 50px;">Access Denied</h1>';
+            content.classList.remove('is-hidden');
+        }
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        window.toggleSolution = function(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'none' || el.style.display === '') {
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
+            }
+        };
+
+        const canvases = {};
+        const canvasElements = document.querySelectorAll('.stylus-zone');
+        canvasElements.forEach(canvasEl => {
+            const canvasId = canvasEl.id;
+            const canvas = new fabric.Canvas(canvasId, { isDrawingMode: true });
+            canvas.freeDrawingBrush.width = 3;
+            canvas.freeDrawingBrush.color = '#333';
+            canvases[canvasId] = canvas;
+            
+            const container = canvasEl.closest('.canvas-container');
+            if (container) {
+                 const setCanvasSize = () => {
+                    canvas.setWidth(container.offsetWidth);
+                    canvas.renderAll();
+                };
+                setCanvasSize();
+                window.addEventListener('resize', setCanvasSize);
+            }
+        });
+        
+        const clearButtons = document.querySelectorAll('.clear-button');
+        clearButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const canvasId = this.getAttribute('data-canvas');
+                if (canvases[canvasId]) {
+                    canvases[canvasId].clear();
+                }
+            });
+        });
+
+    });
+    </script>
+
+</body>
+</html>
