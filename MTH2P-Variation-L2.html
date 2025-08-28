@@ -95,7 +95,7 @@
             </ul>
             <div class="centered">
                 <div id="desmos-graph-1" class="desmos-container"></div>
-                <p><em>Example: Earning $20 per hour. The graph starts at (0, 0).</em></p>
+                <p><em>Example: Earning \$20 per hour. The graph starts at (0, 0).</em></p>
             </div>
 
             <h3>2. Partial Variation</h3>
@@ -107,7 +107,7 @@
             </ul>
             <div class="centered">
                 <div id="desmos-graph-2" class="desmos-container"></div>
-                 <p><em>Example: A $50 flat fee, plus $20 per hour. The graph starts at (0, 50).</em></p>
+                 <p><em>Example: A \$50 flat fee, plus \$20 per hour. The graph starts at (0, 50).</em></p>
             </div>
         </section>
 
@@ -115,7 +115,7 @@
         
         <section id="guided-practice">
             <h2>Guided Practice: Banquet Hall Rental</h2>
-            <p>A banquet hall charges a $200 rental fee, plus $30 per guest for food. Let's analyze this relationship.</p>
+            <p>A banquet hall charges a \$200 rental fee, plus \$30 per guest for food. Let's analyze this relationship.</p>
             
             <h3>1. Does this situation represent direct or partial variation? How do you know?</h3>
             <div class="canvas-container"><canvas class="stylus-zone" id="canvas_gp1" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_gp1">Clear</button></div>
@@ -132,7 +132,7 @@
             <button class="button" onclick="toggleSolution('gp_solution')">Show Solution</button>
             <div id="gp_solution" class="solution-box">
                 <h4>Solution Walkthrough</h4>
-                <p>1. This is <strong>partial variation</strong> because there is an initial rental fee of $200, even for zero guests.</p>
+                <p>1. This is <strong>partial variation</strong> because there is an initial rental fee of \$200, even for zero guests.</p>
                 <p>2. The initial value is the rental fee: **$b = 200**.</p>
                 <p>3. The rate of change is the cost per guest: **$m = 30**.</p>
                 <p>4. The equation is **$C = 30g + 200$**.</p>
@@ -148,7 +148,7 @@
 
         <section class="task">
             <h3>Task 1: The Fundraiser</h3>
-            <p>A school is holding a car wash to raise money. They charge $12 per car.</p>
+            <p>A school is holding a car wash to raise money. They charge \$12 per car.</p>
             <p><strong>Your Workspace:</strong></p>
             <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it1" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it1">Clear</button></div>
             <button class="button" onclick="toggleSolution('it1_solution')">Show Solution</button>
@@ -159,7 +159,7 @@
 
         <section class="task">
             <h3>Task 2: The Savings Account</h3>
-            <p>You start with $50 in a savings account and then deposit $15 each week.</p>
+            <p>You start with \$50 in a savings account and then deposit \$15 each week.</p>
             <p><strong>Your Workspace:</strong></p>
             <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it2" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it2">Clear</button></div>
             <button class="button" onclick="toggleSolution('it2_solution')">Show Solution</button>
@@ -226,12 +226,12 @@
 
         // --- Desmos Graph Initialization ---
         var graph1El = document.getElementById('desmos-graph-1');
-        var calculator1 = Desmos.GraphingCalculator(graph1El, { xAxisLabel: 'Hours Worked', yAxisLabel: 'Pay ($)' });
+        var calculator1 = Desmos.GraphingCalculator(graph1El, { xAxisLabel: 'Hours Worked', yAxisLabel: 'Pay (\$)' });
         calculator1.setExpression({ id: 'g1_line', latex: 'y=20x' });
         calculator1.setMathBounds({ left: -1, right: 10, bottom: -10, top: 210 });
 
         var graph2El = document.getElementById('desmos-graph-2');
-        var calculator2 = Desmos.GraphingCalculator(graph2El, { xAxisLabel: 'Hours Worked', yAxisLabel: 'Pay ($)' });
+        var calculator2 = Desmos.GraphingCalculator(graph2El, { xAxisLabel: 'Hours Worked', yAxisLabel: 'Pay (\$)' });
         calculator2.setExpression({ id: 'g2_line', latex: 'y=20x+50' });
         calculator2.setMathBounds({ left: -1, right: 10, bottom: -10, top: 260 });
     });
