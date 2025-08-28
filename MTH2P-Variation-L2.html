@@ -27,9 +27,10 @@
             --primary-color: #005A9C;
             --secondary-color: #E6F0F6;
             --text-color: #333;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
         body { 
-            /* REMOVED custom font-family to default to browser's choice */
+            font-family: var(--font-stack); 
             color: var(--text-color); 
             line-height: 1.8; 
             margin: 0; 
@@ -37,6 +38,7 @@
             background-color: #fdfdfd; 
         }
         h1, h2, h3 { 
+            font-family: var(--font-stack); 
             font-weight: 700; 
             color: var(--primary-color); 
         }
@@ -97,7 +99,7 @@
             </div>
 
             <h3>2. Partial Variation</h3>
-            <p>In **partial variation**, the relationship starts with an initial value that is **not** zero. There is a fixed, flat fee before the rate of change begins.</p>
+            <p>In <strong>partial variation</strong>, the relationship starts with an initial value that is **not** zero. There is a fixed, flat fee before the rate of change begins.</p>
             <ul>
                 <li>The y-intercept ($b$) is **not** 0.</li>
                 <li>The equation is $y = mx + b$.</li>
@@ -130,10 +132,10 @@
             <button class="button" onclick="toggleSolution('gp_solution')">Show Solution</button>
             <div id="gp_solution" class="solution-box">
                 <h4>Solution Walkthrough</h4>
-                <p>1. This is <strong>partial variation</strong> because there is an initial rental fee of $200, even for zero guests. The graph does not start at (0, 0).</p>
+                <p>1. This is <strong>partial variation</strong> because there is an initial rental fee of $200, even for zero guests.</p>
                 <p>2. The initial value is the rental fee: **$b = 200**.</p>
                 <p>3. The rate of change is the cost per guest: **$m = 30**.</p>
-                <p>4. The equation is **$C = 30g + 200$**, where $C$ is the cost and $g$ is the number of guests.</p>
+                <p>4. The equation is **$C = 30g + 200$**.</p>
             </div>
         </section>
         
@@ -151,8 +153,7 @@
             <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it1" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it1">Clear</button></div>
             <button class="button" onclick="toggleSolution('it1_solution')">Show Solution</button>
             <div id="it1_solution" class="solution-box">
-                <p><strong>Direct Variation.</strong> There is no initial fee. The graph starts at (0, 0).<br>
-                <strong>Equation:</strong> $P = 12c$, where $P$ is profit and $c$ is the number of cars.</p>
+                <p><strong>Direct Variation.</strong><br><strong>Equation:</strong> $P = 12c$</p>
             </div>
         </section>
 
@@ -163,8 +164,7 @@
             <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it2" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it2">Clear</button></div>
             <button class="button" onclick="toggleSolution('it2_solution')">Show Solution</button>
             <div id="it2_solution" class="solution-box">
-                <p><strong>Partial Variation.</strong> There is an initial amount of $50.<br>
-                <strong>Equation:</strong> $S = 15w + 50$, where $S$ is savings and $w$ is the number of weeks.</p>
+                <p><strong>Partial Variation.</strong><br><strong>Equation:</strong> $S = 15w + 50$</p>
             </div>
         </section>
 
@@ -175,8 +175,7 @@
             <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it3" width="900" height="200"></canvas><button class="button clear-button" data-canvas="canvas_it3">Clear</button></div>
             <button class="button" onclick="toggleSolution('it3_solution')">Show Solution</button>
             <div id="it3_solution" class="solution-box">
-                <p><strong>Direct Variation.</strong> For zero batches, you need zero flour.<br>
-                <strong>Equation:</strong> $F = 2b$, where $F$ is flour and $b$ is the number of batches.</p>
+                <p><strong>Direct Variation.</strong><br><strong>Equation:</strong> $F = 2b$</p>
             </div>
         </section>
 
