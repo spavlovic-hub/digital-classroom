@@ -32,8 +32,7 @@
             --header-font: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             --body-font: 'Georgia', serif;
         }
-        .is-hidden { visibility: hidden; opacity: 0; }
-        body { font-family: var(--body-font); color: var(--text-color); line-height: 1.8; margin: 0; padding-top: 60px; background-color: #fdfdfd; transition: opacity 0.3s ease-in-out; }
+        body { font-family: var(--body-font); color: var(--text-color); line-height: 1.8; margin: 0; padding-top: 60px; background-color: #fdfdfd; }
         h1, h2, h3 { font-family: var(--header-font); font-weight: 700; color: var(--primary-color); }
         h1 { font-size: 2.8em; margin-bottom: 0; }
         h2 { font-size: 2.2em; border-bottom: 3px solid var(--secondary-color); padding-bottom: 10px; }
@@ -54,10 +53,6 @@
         nav a { font-family: var(--header-font); color: var(--primary-color); text-decoration: none; padding: 10px 20px; font-weight: 600; transition: color 0.3s, background-color 0.3s; }
         nav a:hover { background-color: var(--secondary-color); border-radius: 5px; }
         hr.divider { border: 0; height: 2px; background: linear-gradient(to right, rgba(0,90,156,0), rgba(0,90,156,0.75), rgba(0,90,156,0)); margin: 40px 0; }
-        .quiz-form-container { max-width: 800px; margin: 20px auto; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; }
-        .quiz-question { margin-bottom: 20px; }
-        .quiz-question label { display: block; margin-bottom: 8px; font-weight: bold; font-family: var(--header-font); }
-        .quiz-question input[type="text"], .quiz-question select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -192,18 +187,6 @@
     </div>
 
     <script>
-    (function() {
-        const password = "variation"; // This must be updated
-        let input = prompt("Please enter the password for today's lesson:", "");
-        const content = document.getElementById('lesson-content');
-        if (input.toLowerCase() === password) {
-            content.style.display = 'block';
-        } else {
-            alert("Incorrect password. Access denied.");
-            document.body.innerHTML = '<h1 style="text-align:center; padding-top: 50px;">Access Denied</h1>';
-        }
-    })();
-
     document.addEventListener('DOMContentLoaded', function() {
         window.toggleSolution = function(id) {
             const el = document.getElementById(id);
