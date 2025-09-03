@@ -1,0 +1,12 @@
+name: Test Dispatch Trigger
+
+on:
+  repository_dispatch:
+    types: [build-lesson]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: I am here!
+        run: echo "SUCCESS! The trigger from Google Sheets was received."
