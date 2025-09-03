@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTH1W - Exponent Laws</title>
+    
+    <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=ae842b9e6d484c2aa4415b355e3ea792"></script>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #005A9C;
+            --secondary-color: #E6F0F6;
+            --text-color: #333;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body { 
+            font-family: var(--font-stack); 
+            color: var(--text-color); 
+            line-height: 1.8; 
+            margin: 0; 
+            padding-top: 60px; 
+            background-color: #fdfdfd; 
+        }
+        h1, h2, h3 { 
+            font-family: var(--font-stack); 
+            font-weight: 700; 
+            color: var(--primary-color); 
+        }
+        h1 { font-size: 2.8em; margin-bottom: 0; }
+        h2 { font-size: 2.2em; border-bottom: 3px solid var(--secondary-color); padding-bottom: 10px; }
+        h3 { font-size: 1.6em; }
+        .subtitle { font-size: 1.5em; font-weight: 300; color: #666; margin-top: 5px; }
+        section { min-height: 90vh; padding: 40px 8%; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #ddd; }
+        .centered { text-align: center; }
+        .button { display: inline-block; padding: 12px 25px; font-size: 1em; font-weight: bold; color: #fff; background-color: var(--primary-color); border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-top: 15px; }
+        .solution-box { display: none; margin-top: 20px; padding: 20px; background-color: var(--secondary-color); border-left: 5px solid var(--primary-color); border-radius: 5px; }
+        .canvas-container { margin: 20px 0; }
+        .stylus-zone { border: 2px dashed #ccc; border-radius: 5px; }
+        .clear-button { font-size: 0.8em; padding: 5px 10px; background-color: #6c757d; }
+        nav { position: fixed; top: 0; width: 100%; background-color: rgba(255, 255, 255, 0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px 2%; z-index: 1000; display: flex; justify-content: center; align-items: center; }
+        nav a { text-decoration: none; padding: 10px 20px; font-weight: 600; color: var(--primary-color); }
+    </style>
+</head>
+<body>
+    
+    <div id="lesson-content">
+        <nav>
+            <a href="#title">Title</a><a href="#concepts">Concepts</a><a href="#practice">Practice</a><a href="#quiz">Recap</a>
+        </nav>
+
+        <section id="title" class="centered">
+            <h1>Number Sense and Algebra</h1>
+            <p class="subtitle">Lesson 3: <strong>Exponent Laws</strong></p>
+        </section>
+
+        <section id="concepts">
+            <h2>Core Concepts: The Rules of Exponents</h2>
+            <p>Exponents are a shorthand way of writing repeated multiplication. The exponent laws are rules that help us simplify expressions involving powers.</p>
+            
+            <h3>1. Multiplication Law</h3>
+            <p>When multiplying powers with the **same base**, you **add** the exponents.</p>
+            $$ (x^a)(x^b) = x^{a+b} $$
+            <p><em>Example: $(x^4)(x^2) = x^{4+2} = x^6$</em></p>
+
+            <h3>2. Division Law</h3>
+            <p>When dividing powers with the **same base**, you **subtract** the exponents.</p>
+            $$ \frac{x^a}{x^b} = x^{a-b} $$
+            <p><em>Example: $\frac{x^7}{x^3} = x^{7-3} = x^4$</em></p>
+
+            <h3>3. Power of a Power Law</h3>
+            <p>When raising a power to another exponent, you **multiply** the exponents.</p>
+            $$ (x^a)^b = x^{ab} $$
+            <p><em>Example: $(x^5)^3 = x^{5 \times 3} = x^{15}$</em></p>
+            
+            <h3>4. Zero Exponent Law</h3>
+            <p>Anything (except zero) raised to the power of zero is **1**.</p>
+            $$ x^0 = 1 $$
+            <p><em>Example: $27^0 = 1$</em></p>
+            
+            <h3>5. Negative Exponent Law</h3>
+            <p>A negative exponent means to take the **reciprocal** of the base.</p>
+            $$ x^{-a} = \frac{1}{x^a} $$
+            <p><em>Example: $x^{-3} = \frac{1}{x^3}$</em></p>
+        </section>
+
+        <section id="practice">
+            <h2>Independent Practice</h2>
+            <p>Use the exponent laws to simplify each expression.</p>
+            
+            <p><strong>1. Simplify:</strong> $(a^2)(a^6)$</p>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it1" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_it1">Clear</button></div>
+            <button class="button" onclick="toggleSolution('it1_solution')">Show Solution</button>
+            <div id="it1_solution" class="solution-box"><p>$a^{2+6} = a^8$</p></div>
+
+            <p><strong>2. Simplify:</strong> $\frac{b^{10}}{b^5}$</p>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it2" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_it2">Clear</button></div>
+            <button class="button" onclick="toggleSolution('it2_solution')">Show Solution</button>
+            <div id="it2_solution" class="solution-box"><p>$b^{10-5} = b^5$</p></div>
+
+            <p><strong>3. Simplify:</strong> $(c^4)^5$</p>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it3" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_it3">Clear</button></div>
+            <button class="button" onclick="toggleSolution('it3_solution')">Show Solution</button>
+            <div id="it3_solution" class="solution-box"><p>$c^{4 \times 5} = c^{20}$</p></div>
+            
+            <p><strong>4. Simplify:</strong> $(3x^2y^5)^3$</p>
+            <div class="canvas-container"><canvas class="stylus-zone" id="canvas_it4" width="900" height="150"></canvas><button class="button clear-button" data-canvas="canvas_it4">Clear</button></div>
+            <button class="button" onclick="toggleSolution('it4_solution')">Show Solution</button>
+            <div id="it4_solution" class="solution-box"><p>$3^3 (x^2)^3 (y^5)^3 = 27x^6y^{15}$</p></div>
+        </section>
+
+        <section id="quiz">
+            <h2>Exit Ticket Quiz</h2>
+            <div id="google-form-placeholder"><p style="text-align:center;font-weight:bold;color:red;">[Run the 'Create Form' script in your Google Sheet and paste the embed code here]</p></div>
+        </section>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.toggleSolution = function(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'none' || el.style.display === '') { el.style.display = 'block'; } else { el.style.display = 'none'; }
+        };
+
+        const canvases = {};
+        const canvasElements = document.querySelectorAll('.stylus-zone');
+        canvasElements.forEach(canvasEl => {
+            const canvasId = canvasEl.id;
+            const canvas = new fabric.Canvas(canvasId, { isDrawingMode: true });
+            canvas.freeDrawingBrush.width = 3; canvas.freeDrawingBrush.color = '#333';
+            canvases[canvasId] = canvas;
+            const container = canvasEl.closest('.canvas-container');
+            if (container) {
+                 const setCanvasSize = () => { canvas.setWidth(container.offsetWidth); canvas.renderAll(); };
+                setCanvasSize();
+                window.addEventListener('resize', setCanvasSize);
+            }
+        });
+        
+        const clearButtons = document.querySelectorAll('.clear-button');
+        clearButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const canvasId = this.getAttribute('data-canvas');
+                if (canvases[canvasId]) { canvases[canvasId].clear(); }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
