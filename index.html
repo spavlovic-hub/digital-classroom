@@ -18,16 +18,17 @@
         <h1>Digital Classroom</h1>
         <p>Please enter the password for today's lesson.</p>
         <form id="loginForm">
-            <input type="password" id="password" autofocus>
+            <input type="password" id="password" name="password" autofocus>
             <button type="submit">Unlock</button>
         </form>
     </div>
 
     <script>
         const lessonMap = {
-            "linear": "MTH2P-Slope-and-Intercept-L1.html",
-            "variation": "MTH2P-Variation-L2.html"
-            // New lesson passwords and filenames will be added here
+            "linear": "MTH1W/MTH1W-Slope-and-Intercept-L1.html",
+            "variation": "MTH1W/MTH1W-Variation-L2.html",
+            "power": "MTH1W/MTH1W-Exponent-Laws-L3.html"
+            // New lessons will be added here
         };
 
         document.getElementById('loginForm').addEventListener('submit', function(event) {
