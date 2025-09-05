@@ -37,7 +37,6 @@ jobs:
       # --- Placeholder for Quiz Generation ---
       - name: Generate Quiz with Google Apps Script
         run: echo "TODO: Call Google Apps Script to generate quiz and get embed code."
-        # A comment to force GitHub to re-read the file
 
       # --- Placeholder for File Commit ---
       - name: Commit and Push New Lesson File
