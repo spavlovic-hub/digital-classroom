@@ -1,0 +1,39 @@
+# .github/workflows/build.yml
+
+name: Build and Deploy Lesson
+
+on:
+  repository_dispatch:
+    types: [build-lesson]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log Received Data
+        run: |
+          echo "Workflow triggered by Google Sheet!"
+          echo "Course: ${{ github.event.client_payload.course }}"
+          echo "Unit: ${{ github.event.client_payload.unit }}"
+          echo "Topic: ${{ github.event.client_payload.topic }}"
+          echo "File Path: ${{ github.event.client_payload.filePath }}"
+
+      - name: Generate Lesson Content with Gemini
+        id: gemini
+        run: |
+          echo "--- Placeholder: Gemini API call will go here ---"
+          echo "Topic: ${{ github.event.client_payload.topic }}"
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # --- Placeholder for Quiz Generation ---
+      - name: Generate Quiz with Google Apps Script
+        run: echo "TODO: Call Google Apps Script to generate quiz and get embed code."
+
+      # --- Placeholder for File Commit ---
+      - name: Commit and Push New Lesson File
+        run: echo "TODO: Commit the generated HTML file to ${{ github.event.client_payload.filePath }} and push to main."
