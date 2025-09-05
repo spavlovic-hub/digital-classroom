@@ -1,46 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Classroom Login</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f2f5; }
-        .login-container { text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        input { font-size: 1.2em; padding: 10px; margin-top: 20px; border: 1px solid #ccc; border-radius: 4px; }
-        button { font-size: 1.2em; padding: 10px 20px; margin-left: 10px; border: none; border-radius: 4px; background-color: #005A9C; color: white; cursor: pointer; }
-        button:hover { background-color: #004170; }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <h1>Digital Classroom</h1>
-        <p>Please enter the password for today's lesson.</p>
-        <form id="loginForm">
-            <input type="password" id="password" name="password" autofocus>
-            <button type="submit">Unlock</button>
-        </form>
-    </div>
-
-    <script>
-        const lessonMap = {
-            "linear": "MTH2P/MTH2P-Slope-and-Intercept-L1.html",
-            "variation": "MTH2P/MTH2P-Variation-L2.html",
-            "power": "MTH1W/MTH1W-Exponent-Laws-L3.html",
-            "fractions": "MTH1W/MTH1W-Fractions-and-Integers-L2.html"
-        };
-
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const password = document.getElementById('password').value.trim().toLowerCase();
-            if (lessonMap[password]) {
-                window.location.href = lessonMap[password];
-            } else {
-                alert("Incorrect password. Please try again.");
-                document.getElementById('password').value = "";
-            }
-        });
-    </script>
-</body>
-</html>
+<!doctype html>
+<meta charset="utf-8">
+<title>Digital Classroom</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font:16px/1.5 system-ui;background:#0e1117;color:#e6edf3;display:grid;place-items:center;height:100dvh;margin:0}
+  .card{background:#161b22;border:1px solid #2d333b;border-radius:14px;padding:20px;max-width:420px;width:92%}
+  input,button{width:100%;padding:10px;border-radius:10px;border:1px solid #2d333b;background:#0b0f15;color:#e6edf3}
+  button{background:#2f81f7;border:0;margin-top:10px}
+  label{display:block;margin-top:10px}
+  .muted{color:#9aa4b2;font-size:14px}
+</style>
+<div class="card">
+  <h2>Welcome</h2>
+  <label>Student Name <input id="name"></label>
+  <label>Student Number <input id="sid"></label>
+  <label>Daily Code <input id="code" placeholder="Ask your teacher"></label>
+  <button id="go">Enter</button>
+  <p class="muted">Your info is stored locally to personalize lessons & exit tickets.</p>
+</div>
+<script>
+  document.getElementById('go').onclick = () => {
+    const name = document.getElementById('name').value.trim();
+    const sid  = document.getElementById('sid').value.trim();
+    const code = document.getElementById('code').value.trim();
+    if(!name || !sid || !code) return alert('Fill all fields.');
+    // Store locally
+    localStorage.setItem('studentName', name);
+    localStorage.setItem('studentId', sid);
+    // Code → lesson path mapping (simple): teacher shares a code that is literally the path
+    // e.g., code: "SNC1W/Unit 1/L01 - Significant Digits.html"
+    location.href = code;
+  };
+</script>
