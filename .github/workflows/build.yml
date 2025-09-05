@@ -1,22 +1,18 @@
-# .github/workflows/build.yml
-
 name: Build and Deploy Lesson
 
 on:
   workflow_dispatch:
     inputs:
-      course:
-        description: 'Course Name'
-        required: true
-      unit:
-        description: 'Unit Name'
-        required: true
-      topic:
-        description: 'Lesson Topic'
-        required: true
-      filePath:
-        description: 'File Path for the new lesson'
-        required: true
+      course:       { description: 'Course code (e.g., SNC1W)', required: true, type: string }
+      unit:         { description: 'Unit name', required: true, type: string }
+      topic:        { description: 'Lesson topic', required: true, type: string }
+      filePath:     { description: 'Output HTML path (e.g., SNC1W/Unit 1/L01 - Topic.html)', required: true, type: string }
+      components:   { description: 'Comma-separated (lab,extra,exit)', required: false, type: string, default: '' }
+      studentFormUrl: { description: 'Optional Google Form embed URL', required: false, type: string, default: '' }
+      gateUntil:    { description: 'Unlock date YYYY-MM-DD (optional)', required: false, type: string, default: '' }
+
+  repository_dispatch:
+    types: [create-lesson]
 
 jobs:
   build:
@@ -26,24 +22,364 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log Received Data
+      - name: Normalize inputs (works for both events)
+        id: norm
+        shell: bash
         run: |
-          echo "Workflow triggered via workflow_dispatch!"
-          echo "Course: ${{ github.event.inputs.course }}"
-          echo "Unit: ${{ github.event.inputs.unit }}"
-          echo "Topic: ${{ github.event.inputs.topic }}"
-          echo "File Path: ${{ github.event.inputs.filePath }}"
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            COURSE="${{ github.event.client_payload.course }}"
+            UNIT="${{ github.event.client_payload.unit }}"
+            TOPIC="${{ github.event.client_payload.topic }}"
+            FILE_PATH="${{ github.event.client_payload.filePath }}"
+            COMPONENTS="${{ github.event.client_payload.components }}"
+            FORM_URL="${{ github.event.client_payload.studentFormUrl }}"
+            GATE_UNTIL="${{ github.event.client_payload.gateUntil }}"
+          else
+            COURSE="${{ inputs.course }}"
+            UNIT="${{ inputs.unit }}"
+            TOPIC="${{ inputs.topic }}"
+            FILE_PATH="${{ inputs.filePath }}"
+            COMPONENTS="${{ inputs.components }}"
+            FORM_URL="${{ inputs.studentFormUrl }}"
+            GATE_UNTIL="${{ inputs.gateUntil }}"
+          fi
 
-      - name: Generate Lesson Content with Gemini
-        id: gemini
+          # Fallbacks
+          COMPONENTS="${COMPONENTS:-}"
+          FORM_URL="${FORM_URL:-}"
+          GATE_UNTIL="${GATE_UNTIL:-}"
+
+          echo "course=$COURSE"           >> $GITHUB_OUTPUT
+          echo "unit=$UNIT"               >> $GITHUB_OUTPUT
+          echo "topic=$TOPIC"             >> $GITHUB_OUTPUT
+          echo "file_path=$FILE_PATH"     >> $GITHUB_OUTPUT
+          echo "components=$COMPONENTS"   >> $GITHUB_OUTPUT
+          echo "form_url=$FORM_URL"       >> $GITHUB_OUTPUT
+          echo "gate_until=$GATE_UNTIL"   >> $GITHUB_OUTPUT
+
+          echo "Resolved:"
+          echo "  COURSE=$COURSE"
+          echo "  UNIT=$UNIT"
+          echo "  TOPIC=$TOPIC"
+          echo "  FILE_PATH=$FILE_PATH"
+          echo "  COMPONENTS=$COMPONENTS"
+          echo "  FORM_URL=$FORM_URL"
+          echo "  GATE_UNTIL=$GATE_UNTIL"
+
+      # --- Optional AI enrichment (commented out for now). Solid baseline works without AI. ---
+      # - name: Generate content with Gemini (JSON contract)
+      #   if: false
+      #   env:
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #   run: |
+      #     cat > prompt.json << 'JSON'
+      #     {
+      #       "topic": "${{ steps.norm.outputs.topic }}",
+      #       "course": "${{ steps.norm.outputs.course }}",
+      #       "unit": "${{ steps.norm.outputs.unit }}",
+      #       "schema": {
+      #         "type": "object",
+      #         "properties": {
+      #           "learningGoals": { "type": "array", "items": { "type": "string" } },
+      #           "iDo": { "type": "string" },
+      #           "weDo": { "type": "string" },
+      #           "youDo": { "type": "string" },
+      #           "answerKey": { "type": "string" }
+      #         },
+      #         "required": ["learningGoals","iDo","weDo","youDo","answerKey"]
+      #       }
+      #     }
+      #     JSON
+      #     # Example curl to Gemini JSON response (replace with your exact model/endpoint)
+      #     # curl ... > content.json
+      #     # For v1, we’ll skip AI and let the deterministic template run.
+
+      - name: Generate lesson HTML (deterministic v1)
+        shell: bash
         run: |
-          echo "--- Placeholder: Gemini API call will go here ---"
-          echo "Topic: ${{ github.event.inputs.topic }}"
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          node -e '
+            const fs = require("fs");
+            const path = require("path");
 
-      - name: Generate Quiz with Google Apps Script
-        run: echo "TODO: Call Google Apps Script to generate quiz and get embed code."
+            const COURSE     = process.env.COURSE     || "${{ steps.norm.outputs.course }}";
+            const UNIT       = process.env.UNIT       || "${{ steps.norm.outputs.unit }}";
+            const TOPIC      = process.env.TOPIC      || "${{ steps.norm.outputs.topic }}";
+            const FILE_PATH  = process.env.FILE_PATH  || "${{ steps.norm.outputs.file_path }}";
+            const COMPONENTS = (process.env.COMPONENTS || "${{ steps.norm.outputs.components }}").toLowerCase();
+            const FORM_URL   = process.env.FORM_URL   || "${{ steps.norm.outputs.form_url }}";
+            const GATE_UNTIL = process.env.GATE_UNTIL || "${{ steps.norm.outputs.gate_until }}";
 
-      - name: Commit and Push New Lesson File
-        run: echo "TODO: Commit the generated HTML file to ${{ github.event.inputs.filePath }} and push to main."
+            const include = (name) => COMPONENTS.split(",").map(s=>s.trim()).filter(Boolean).includes(name);
+
+            const dir = path.dirname(FILE_PATH);
+            fs.mkdirSync(dir, { recursive: true });
+
+            const html = String.raw`<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>${COURSE} – ${UNIT} – ${TOPIC}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg:#0e1117; --fg:#e6edf3; --muted:#9aa4b2; --card:#161b22; --accent:#2f81f7; --ok:#2ea043; --warn:#d29922; --err:#f85149; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--fg); }
+    header, footer { background:var(--card); padding:12px 16px; position:sticky; top:0; z-index:5; }
+    footer { position:static; margin-top:40px; }
+    .wrap { max-width: 1050px; margin: 0 auto; padding: 16px; }
+    h1 { font-size: 22px; margin: 8px 0 0; }
+    .meta { color: var(--muted); font-size: 14px; }
+    .bar { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    button, .btn { background:var(--accent); color:white; border:0; border-radius:10px; padding:8px 12px; cursor:pointer; }
+    button.secondary { background:var(--card); color:var(--fg); border:1px solid #2d333b; }
+    section.card { background:var(--card); border:1px solid #2d333b; border-radius:12px; padding:16px; margin:16px 0; }
+    .row { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 900px) { .row.two { grid-template-columns: 1fr 1fr; } }
+    label { display:block; font-weight:600; margin-bottom:6px; }
+    input[type="text"], input[type="number"], textarea { width:100%; background:#0b0f15; color:var(--fg); border:1px solid #2d333b; border-radius:8px; padding:8px; }
+    .muted { color:var(--muted); }
+    .success { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .error { color: var(--err); }
+    .k { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background:#0b0f15; border:1px solid #2d333b; padding:2px 6px; border-radius:6px; }
+    .teacher { border-left:4px solid var(--accent); padding-left:12px; background:#0b1320; }
+    .answer { display:none; margin-top:8px; padding:8px; background:#0b0f15; border:1px dashed #2d333b; border-radius:8px; }
+    .shown .answer { display:block; }
+    .lock { padding:12px; background:#120e00; border:1px solid #3a3000; border-radius:12px; }
+    .flex { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .right { margin-left:auto; }
+    .hidden { display:none !important; }
+    .print-hide { display:inline-block; }
+    @media print { .print-hide { display:none !important; } body { background:white; color:black; } header,footer { display:none; } section.card { border:1px solid #ccc; } }
+  </style>
+
+  <!-- Desmos API (official key) -->
+  <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcbcb0922b452b1cf94b4f58dc06d450"></script>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="flex">
+        <div>
+          <strong>${COURSE}</strong> • ${UNIT}<br/>
+          <span class="meta">${TOPIC}</span>
+        </div>
+        <div class="right flex">
+          <button class="secondary print-hide" id="saveBtn">Save Progress</button>
+          <button class="secondary print-hide" id="loadBtn">Load</button>
+          <button class="secondary print-hide" id="printBtn">Export PDF</button>
+          <label class="print-hide" style="display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="showAnswersChk"/> Show answers
+          </label>
+          <span id="status" class="meta"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="card" id="gateBox" aria-live="polite"></section>
+
+    <section class="card">
+      <div class="row two">
+        <div>
+          <label>Student Name</label>
+          <input id="studentName" type="text" placeholder="First Last"/>
+        </div>
+        <div>
+          <label>Student Number</label>
+          <input id="studentId" type="text" placeholder="e.g., 123456"/>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:8px;">This links your work and exit ticket to you. Stored locally on your device.</div>
+    </section>
+
+    <section class="card">
+      <h2>Learning Goals</h2>
+      <ul id="lgList">
+        <li>Understand today’s topic: <em>${TOPIC}</em>.</li>
+        <li>Practice with teacher-led and independent problems.</li>
+        <li>Demonstrate understanding via exit ticket.</li>
+      </ul>
+    </section>
+
+    <section class="card teacher print-hide" id="teacherNotes">
+      <strong>Teacher Notes (private unless <span class="k">?teacher=1</span>)</strong>
+      <div class="muted">Use <span class="k">?teacher=1</span> in the URL to reveal this box in class. Hidden for students.</div>
+      <ul>
+        <li>Warm-up: recap prior knowledge.</li>
+        <li>Key misconceptions to watch for.</li>
+        <li>Pacing cues & checks for understanding.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>I do</h2>
+      <p>Direct instruction with worked example(s).</p>
+      <div id="desmos1" style="height:340px; border:1px solid #2d333b; border-radius:8px;"></div>
+      <details class="print-hide" style="margin-top:8px;">
+        <summary>Optional: paste a Desmos graph URL</summary>
+        <input id="desmosLink" type="text" placeholder="https://www.desmos.com/calculator/..." />
+        <button class="secondary" id="loadGraph">Load</button>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>We do</h2>
+      <ol id="weDoList">
+        <li>Solve: <input type="text" data-key="we1" placeholder="Your work here"/> <div class="answer">Answer: <span class="k">42</span></div></li>
+        <li>Explain: <input type="text" data-key="we2" placeholder="Explain reasoning"/> <div class="answer">Sample explanation...</div></li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>You do</h2>
+      <ol id="youDoList">
+        <li>Practice 1: <input type="text" data-key="yo1" placeholder="Answer here"/> <div class="answer">Answer key placeholder</div></li>
+        <li>Practice 2: <input type="text" data-key="yo2" placeholder="Answer here"/> <div class="answer">Answer key placeholder</div></li>
+      </ol>
+    </section>
+
+    ${include("lab") ? String.raw`
+    <section class="card" id="labSection">
+      <h2>Lab / Investigation</h2>
+      <p>Brief procedure and recording table.</p>
+      <textarea data-key="labNotes" rows="6" placeholder="Observations, data, analysis..."></textarea>
+    </section>` : ""}
+
+    ${include("extra") ? String.raw`
+    <section class="card" id="extraSection">
+      <h2>Extra Practice</h2>
+      <ol>
+        <li><input type="text" data-key="ex1" placeholder="Answer"/> <div class="answer">Key...</div></li>
+        <li><input type="text" data-key="ex2" placeholder="Answer"/> <div class="answer">Key...</div></li>
+      </ol>
+    </section>` : ""}
+
+    ${FORM_URL ? String.raw`
+    <section class="card" id="exitTicket">
+      <h2>Exit Ticket</h2>
+      <div class="muted">Auto-marks where possible (configure in Form). Student info is pre-filled.</div>
+      <iframe id="exitFrame" src="" style="width:100%; height:540px; border:0; background:white;"></iframe>
+    </section>` : ""}
+
+    <footer class="wrap">
+      <div class="flex">
+        <div class="muted">© ${new Date().getFullYear()} ${COURSE} • ${UNIT} • ${TOPIC}</div>
+        <button class="secondary right print-hide" onclick="window.scrollTo({top:0,behavior:\'smooth\'})">Back to top</button>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // --- Core config/state ---
+    const COURSE=${JSON.stringify(COURSE)};
+    const UNIT=${JSON.stringify(UNIT)};
+    const TOPIC=${JSON.stringify(TOPIC)};
+    const GATE_UNTIL=${JSON.stringify(GATE_UNTIL)};
+    const FORM_URL=${JSON.stringify(FORM_URL)};
+    const include = (name) => ${JSON.stringify(COMPONENTS)}.split(",").map(s=>s.trim()).filter(Boolean).includes(name);
+
+    const q = new URLSearchParams(location.search);
+    const IS_TEACHER = q.get("teacher") === "1";
+
+    const $ = (id) => document.getElementById(id);
+    const status = $("status");
+
+    // --- Gate by date (soft) ---
+    (function gate() {
+      const box = $("gateBox");
+      if (!GATE_UNTIL) { box.classList.add("hidden"); return; }
+      const today = new Date(); today.setHours(0,0,0,0);
+      const unlock = new Date(GATE_UNTIL + "T00:00:00");
+      if (today < unlock && !IS_TEACHER) {
+        box.innerHTML = '<div class="lock"><strong>Locked</strong><br/>This lesson unlocks on <span class="k">'+GATE_UNTIL+'</span>. Your teacher may share a different link when ready.</div>';
+      } else {
+        box.classList.add("hidden");
+      }
+    })();
+
+    // --- Teacher notes visibility ---
+    (function teacherBox() {
+      const el = $("teacherNotes");
+      if (!IS_TEACHER) el.classList.add("hidden");
+    })();
+
+    // --- Desmos ---
+    let calc = null;
+    (function bootDesmos() {
+      const elt = $("desmos1");
+      if (!elt || !window.Desmos) return;
+      calc = Desmos.GraphingCalculator(elt, { expressions: true, settingsMenu: false });
+    })();
+    $("loadGraph")?.addEventListener("click", () => {
+      const url = $("desmosLink").value.trim();
+      if (!url) return;
+      // Simple loader: open in a new tab; full import requires API tokens per graph.
+      window.open(url, "_blank", "noopener");
+    });
+
+    // --- Show/Hide answers ---
+    const answersToggle = $("showAnswersChk");
+    const toggleAnswers = () => {
+      document.querySelectorAll(".answer").forEach(ans => {
+        if (answersToggle.checked) ans.parentElement.classList.add("shown");
+        else ans.parentElement.classList.remove("shown");
+      });
+      localStorage.setItem(key("showAnswers"), answersToggle.checked ? "1" : "0");
+    };
+    answersToggle?.addEventListener("change", toggleAnswers);
+
+    // --- Save/Load (localStorage) ---
+    const lessonId = \`\${COURSE}::\${UNIT}::\${TOPIC}\`;
+    const key = (k) => \`L|\${lessonId}|\${k}\`;
+
+    function saveAll() {
+      ["studentName","studentId"].forEach(id => localStorage.setItem(key(id), $(id).value));
+      document.querySelectorAll("[data-key]").forEach(inp => {
+        localStorage.setItem(key(inp.dataset.key), inp.value);
+      });
+      localStorage.setItem(key("showAnswers"), answersToggle?.checked ? "1" : "0");
+      status.textContent = "Saved ✓"; setTimeout(()=>status.textContent="", 1500);
+    }
+    function loadAll() {
+      ["studentName","studentId"].forEach(id => { const v = localStorage.getItem(key(id)); if (v!==null) $(id).value = v; });
+      document.querySelectorAll("[data-key]").forEach(inp => {
+        const v = localStorage.getItem(key(inp.dataset.key)); if (v!==null) inp.value = v;
+      });
+      const sa = localStorage.getItem(key("showAnswers"));
+      if (sa === "1") { answersToggle.checked = true; toggleAnswers(); }
+      // Prefill form
+      if (FORM_URL) {
+        const name = encodeURIComponent($("studentName").value || "");
+        const sid  = encodeURIComponent($("studentId").value || "");
+        const formSrc = new URL(FORM_URL);
+        // If you have prefill entry IDs, map them here, e.g.: formSrc.searchParams.set("entry.1111111111", name);
+        $("exitFrame").src = formSrc.toString();
+      }
+      status.textContent = "Loaded ✓"; setTimeout(()=>status.textContent="", 1500);
+    }
+
+    $("saveBtn")?.addEventListener("click", saveAll);
+    $("loadBtn")?.addEventListener("click", loadAll);
+    $("printBtn")?.addEventListener("click", () => window.print());
+
+    // Autoload once on first visit
+    window.addEventListener("load", () => { try { loadAll(); } catch {} });
+
+  </script>
+</body>
+</html>`;
+
+            fs.writeFileSync(FILE_PATH, html, "utf8");
+            console.log("Wrote:", FILE_PATH);
+          '
+
+      - name: Commit lesson file
+        shell: bash
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${{ steps.norm.outputs.file_path }}"
+          git commit -m "Add lesson: ${{ steps.norm.outputs.course }} / ${{ steps.norm.outputs.unit }} / ${{ steps.norm.outputs.topic }}" || echo "No changes to commit"
+          git push
