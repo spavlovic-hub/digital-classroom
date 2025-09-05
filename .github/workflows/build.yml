@@ -25,43 +25,12 @@ jobs:
       - name: Generate Lesson Content with Gemini
         id: gemini
         run: |
-          # 1. Construct the API request payload with a detailed prompt.
-          # This is the "Master Prompt" that defines the quality of the lesson.
-          cat <<EOF > request.json
-          {
-            "contents": [{
-              "parts": [{
-                "text": "You are an expert curriculum designer for a digital-first classroom. Your task is to generate the complete HTML content for a single, self-contained digital math/science lesson.
-
-                **Course:** ${{ github.event.client_payload.course }}
-                **Unit:** ${{ github.event.client_payload.unit }}
-                **Topic:** ${{ github.event.client_payload.topic }}
-
-                **INSTRUCTIONS:**
-                1.  **Output Format:** Generate a single block of clean HTML code. Do NOT include `<html>`, `<head>`, or `<body>` tags. The content must be ready to be injected directly inside a parent `<div>`.
-                2.  **Structure:** Use clear headings (`<h2>`, `<h3>`) for sections. Structure the lesson using the 'I Do, We Do, You Do' pedagogical model.
-                3.  **Equations:** Use MathJax syntax for ALL mathematical notation. Use `\\( ... \\)` for inline math and `\\[ ... \\]` for centered, display-style equations.
-                4.  **Interactivity:** Where a concept can be visualized, include a placeholder comment for an interactive Desmos graph like this: ``.
-                5.  **Practice:** The 'You Do' section must contain practice questions categorized by difficulty: 'Mild', 'Medium', and 'Spicy' to provide differentiation for students.
-
-                Generate the lesson content now."
-              }]
-            }]
-          }
-          EOF
-
-          # 2. Call the Gemini API using the curl command.
-          curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
-          -H "Content-Type: application/json" \
-          -d @request.json > response.json
-
-          # 3. Parse the JSON response with the 'jq' tool to extract only the text content.
-          jq -r '.candidates[0].content.parts[0].text' response.json > lesson.html
-
-          # 4. For debugging, print the first 20 lines of the generated HTML file to the log.
-          echo "--- Generated lesson.html (first 20 lines) ---"
-          head -n 20 lesson.html
-          echo "-------------------------------------------"
+          echo "--- Starting Simplified Test ---"
+          echo "Step 1: This is a test."
+          echo "Step 2: Checking if multi-line scripts work."
+          echo "Step 3: Received topic - ${{ github.event.client_payload.topic }}"
+          echo "Step 4: Test complete."
+          echo "------------------------------"
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
