@@ -1,0 +1,12 @@
+name: Ping from Sheet
+
+on:
+  repository_dispatch:
+    types: [ping-test]
+
+jobs:
+  pong:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pong
+        run: echo "Ping received successfully!"
